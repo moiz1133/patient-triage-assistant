@@ -1,5 +1,5 @@
 [project]
 name = "patient-triage-assistant"
 version = "0.1.0"
-description = "Patient Intake Triage Assistant"
+description = "AI-powered patient intake triage decision-support tool"
 requires-python = ">=3.11"
