@@ -26,6 +26,19 @@ print(case.model_dump_json(indent=2))
 
 ---
 
+## Layer 2 — Red-Flag Detection
+
+```python
+from src.layers.pipeline import run_intake_pipeline
+
+result = run_intake_pipeline("68yo male, sudden severe chest pain, sweating")
+print(result.minimum_esi_floor)  # 1 — forces ESI 1 regardless of what Layer 3 later concludes
+```
+
+This layer runs **before** the LLM and establishes a safety floor that Layer 4 (Week 5) will enforce no matter what the LLM outputs in Layer 3. Rules are deterministic, auditable, and require zero API calls.
+
+---
+
 ## Tech Stack
 
 | Component | Technology |
@@ -58,11 +71,12 @@ pytest tests/ -v              # run smoke tests
 
 ## Project Status
 
-> **Week 2 complete:** Layer 1 (input parsing) implemented and tested.
-> - GPT-4o-mini structured extraction with Pydantic schema enforcement
-> - Prompt-injection resistant (input text treated as data, never instructions)
-> - Graceful degradation on empty input, malformed input, and LLM failures — never crashes the pipeline
-> - 8 integration tests covering edge cases
+> **Week 3 complete:** Layer 2 (red-flag rule engine) implemented and tested.
+> - 14 red-flag rules covering chest pain, stroke (FAST), respiratory distress, hemorrhage, altered consciousness, anaphylaxis, pediatric fever, severe abdominal pain, hypotension, tachycardia, high fever, suicidal ideation, and pregnancy complications
+> - Pure Python, zero LLM dependency — fully deterministic and auditable
+> - Every trigger logged to `logs/triage_events.jsonl` for audit trail
+> - 16 unit tests, 100% rule coverage, all passing without API calls
+> - Layers 1+2 wired together via `run_intake_pipeline()`
 
 ---
 
@@ -79,3 +93,5 @@ pytest tests/                           # all tests
 ## Disclaimer
 
 This tool is for decision-support only. All assessments must be reviewed and confirmed by qualified clinical staff before any action is taken. It is not a substitute for professional medical judgement.
+
+> Red-flag rules in `src/core/red_flag_rules.py` are illustrative and based on general clinical triage principles (ESI, FAST stroke criteria). They are NOT a substitute for clinically validated protocols and would require review by a licensed clinician before any real-world use.
