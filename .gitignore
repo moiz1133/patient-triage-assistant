@@ -3,3 +3,5 @@ __pycache__/
 .env
 chroma_db/
 knowledge_base/raw/*.pdf
+logs/
+!logs/.gitkeep
