@@ -15,6 +15,17 @@ A four-layer pipeline processes each intake form end-to-end:
 
 ---
 
+## Layer 1 — Input Parsing
+
+```python
+from src.layers.extraction import extract_patient_case
+
+case = extract_patient_case("55yo male, sudden severe chest pain, 20 min ago")
+print(case.model_dump_json(indent=2))
+```
+
+---
+
 ## Tech Stack
 
 | Component | Technology |
@@ -47,7 +58,21 @@ pytest tests/ -v              # run smoke tests
 
 ## Project Status
 
-> **Week 1 complete:** project scaffold, Pydantic schemas, ChromaDB client, red-flag rule registry, and smoke tests.
+> **Week 2 complete:** Layer 1 (input parsing) implemented and tested.
+> - GPT-4o-mini structured extraction with Pydantic schema enforcement
+> - Prompt-injection resistant (input text treated as data, never instructions)
+> - Graceful degradation on empty input, malformed input, and LLM failures — never crashes the pipeline
+> - 8 integration tests covering edge cases
+
+---
+
+## Running Tests
+
+```bash
+pytest tests/ -m "not integration"     # fast tests only
+pytest tests/ -m integration            # integration tests (uses OpenAI API, costs credits)
+pytest tests/                           # all tests
+```
 
 ---
 
